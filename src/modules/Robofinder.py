@@ -28,8 +28,20 @@ def run_tool(url):
     os.chdir(TOOL_DIR)
     
     # تشغيل الأداة
-    subprocess.run(["python3", "robofinder/robofinder.py", "-u", url])
+    subprocess.run(
+    ["python3", "robofinder/robofinder.py", "-u", url, "-o", "Rebofider_output.txt"],
+    stdout=subprocess.DEVNULL,  # إخفاء الإخراج العادي
+  #  stderr=subprocess.DEVNULL   # إخفاء الأخطاء أيضًا
+    )
 
+    # ارجاع النتائج
+    with open("Rebofider_output.txt", "r") as file:
+        output = file.read()
+    return output
 # مثال على استخدام الدالة
-if __name__ == "__main__":
-    run_tool("https://example.com")
+
+#run_tool("https://companyhub.com")
+
+
+Github_URL_Clone = ""
+

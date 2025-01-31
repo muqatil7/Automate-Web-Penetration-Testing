@@ -71,7 +71,7 @@ def load_modules():
         if mod_name != 'base':  # Skip the base module
             try:
                 module = importlib.import_module(f"modules.{mod_name}")
-                if hasattr(module, "run"):
+                if hasattr(module, "run_tool"):
                     modules[mod_name] = module
                     module_status.append({"name": mod_name, "status": "loaded"})
                 else:
@@ -113,7 +113,7 @@ def main():
                 if mod_name in modules:
                     display.print_module_start(mod_name)
                     try:
-                        results = modules[mod_name].run(args.url)
+                        results = modules[mod_name].run_tool(args.url)
                         
                         # Format and display results
                         display.show_results(results, mod_name)

@@ -92,7 +92,7 @@ class DisplayManager:
     def show_results(self, results, mod_name):
         """Format and display results"""
         if isinstance(results, dict):
-            table = Table(title=f"Results from {mod_name}", 
+            table = Table(title=f"Results from[yellow] --> {mod_name}[/yellow]", 
                          show_header=True, header_style="bold magenta")
             table.add_column("Key", style="cyan")
             table.add_column("Value", style="green")
@@ -103,12 +103,12 @@ class DisplayManager:
         elif isinstance(results, list):
             panel = Panel("\n".join([f"[cyan]{i+1}.[/cyan] {item}" 
                                    for i, item in enumerate(results)]),
-                         title=f"Results from {mod_name}",
+                         title=f"Results from[yellow] --> {mod_name}[/yellow]",
                          border_style="magenta")
             self.console.print(panel)
         else:
             panel = Panel(str(results), 
-                         title=f"Results from {mod_name}", 
+                         title=f"Results from[yellow] --> {mod_name}[/yellow]", 
                          border_style="magenta")
             self.console.print(panel)
 

@@ -72,6 +72,8 @@ def main():
         ui.show_error(f"Critical error: {str(e)}")
         logging.exception("Critical error occurred")
 
+
+
 if __name__ == "__main__":
     main()
 

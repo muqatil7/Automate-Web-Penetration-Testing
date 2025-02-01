@@ -10,6 +10,7 @@ import platform
 import getpass
 from datetime import datetime
 
+
 class UIManager:
     def __init__(self):
         self.console = Console()

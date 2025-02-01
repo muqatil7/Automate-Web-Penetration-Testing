@@ -20,3 +20,62 @@ Traceback (most recent call last):
 Exception: Installation failed for command 'python3 -m pip install -U pip setuptools wheel': Python was not found; run without arguments to install from the Microsoft Store, or disable this shortcut from Settings > Manage App Execution Aliases.
 
 2025-02-01 08:47:44,481 - ERROR - Execution failed: 'output_dir'
+2025-02-01 11:34:19,230 - INFO - Starting execution of 2 tools against https://companyhub.com
+2025-02-01 11:34:19,232 - INFO - Starting OneForAll execution against https://companyhub.com
+Command: python oneforall.py --target https://companyhub.com run
+2025-02-01 11:34:19,232 - INFO - Starting robofinder execution against https://companyhub.com
+Command: python robofinder/robofinder.py -u https://companyhub.com -s
+2025-02-01 11:34:20,428 - ERROR - Error in OneForAll: Traceback (most recent call last):
+  File "D:\My Project\Automate-Web-Penetration-Testing\tools_installations\OneForAll\oneforall.py", line 16, in <module>
+    from brute import Brute
+  File "D:\My Project\Automate-Web-Penetration-Testing\tools_installations\OneForAll\brute.py", line 14, in <module>
+    import exrex
+  File "C:\Users\yhysy\AppData\Local\Programs\Python\Python312\Lib\site-packages\exrex.py", line 25, in <module>
+    from re import sre_parse, U
+ImportError: cannot import name 'sre_parse' from 're' (C:\Users\yhysy\AppData\Local\Programs\Python\Python312\Lib\re\__init__.py)
+
+2025-02-01 11:34:46,761 - INFO - 
+2025-02-01 11:34:46,762 - INFO - /secondary_feed/
+2025-02-01 11:34:46,762 - INFO - /wp-admin/admin-ajax.php
+2025-02-01 11:34:46,763 - INFO - https://companyhub.com/sitemap_index.xml
+2025-02-01 11:34:46,763 - INFO - /t.php
+2025-02-01 11:34:46,764 - INFO - /logs
+2025-02-01 11:34:46,764 - INFO - /click
+2025-02-01 11:34:46,765 - INFO - /note/
+2025-02-01 11:34:46,765 - INFO - /click.php
+2025-02-01 11:34:46,765 - INFO - /search.php
+2025-02-01 11:34:46,766 - INFO - /exitpage/
+2025-02-01 11:34:46,766 - INFO - /popup/
+2025-02-01 11:34:46,767 - INFO - /wp-admin/
+2025-02-01 11:34:46,768 - INFO - /search_caf.php
+2025-02-01 11:34:46,768 - INFO - /ud.php
+2025-02-01 11:34:46,769 - INFO - /r.php
+2025-02-01 11:34:46,808 - INFO - Tool robofinder completed successfully (duration: 27.57s)
+2025-02-01 11:34:46,810 - INFO - Completed execution of all tools against https://companyhub.com
+2025-02-01 12:04:25,487 - ERROR - Critical error occurred
+Traceback (most recent call last):
+  File "d:\My Project\Automate-Web-Penetration-Testing\main.py", line 64, in main
+    results = exe.run_tools(tools_to_run, args.target, args.workers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\My Project\Automate-Web-Penetration-Testing\src\core\executor.py", line 80, in run_tools
+    self.console.print("[bold green]Starting tools execution...[/bold green]")
+    ^^^^^^^^^^^^
+AttributeError: 'ToolExecutor' object has no attribute 'console'
+2025-02-01 12:12:06,530 - ERROR - Critical error occurred
+Traceback (most recent call last):
+  File "d:\My Project\Automate-Web-Penetration-Testing\main.py", line 64, in main
+    results = exe.run_tools(tools_to_run, args.target, args.workers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\My Project\Automate-Web-Penetration-Testing\src\core\executor.py", line 80, in run_tools
+    UIManager.console.print("[bold green]Starting tools execution...[/bold green]")
+    ^^^^^^^^^^^^^^^^^
+AttributeError: type object 'UIManager' has no attribute 'console'
+2025-02-01 12:13:15,272 - ERROR - Critical error occurred
+Traceback (most recent call last):
+  File "d:\My Project\Automate-Web-Penetration-Testing\main.py", line 64, in main
+    results = exe.run_tools(tools_to_run, args.target, args.workers)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\My Project\Automate-Web-Penetration-Testing\src\core\executor.py", line 80, in run_tools
+    self.console.print("[bold green]Starting tools execution...[/bold green]")
+    ^^^^^^^^^^^^
+AttributeError: 'ToolExecutor' object has no attribute 'console'

@@ -1,0 +1,7 @@
+Robofinder:
+  download:
+    github_url: "https://github.com/Spix0r/robofinder.git"
+
+  command: "cd robofinder"
+  requirements_file: "pip install -r requirements.txt"
+  usage_command: "robofinder -u https://example.com"

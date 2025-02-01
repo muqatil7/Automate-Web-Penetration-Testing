@@ -1,0 +1,7 @@
+name: robofinder
+description: "Robots.txt analyzer"
+install:
+  - "git clone https://github.com/Spix0r/robofinder.git"
+  - "cd robofinder && pip install -r requirements.txt"
+run_command: "python robofinder/robofinder.py -u {target} -s"
+output_dir: robofinder_scans

@@ -1,0 +1,14 @@
+tools:
+  Python_tools:
+	  
+    subdomain: 
+		  summary: ".."
+	  
+    scanner:
+		  summary: ".."
+	  
+    exploit:
+		  summary: ".."
+
+threads: 4
+mode: "all"

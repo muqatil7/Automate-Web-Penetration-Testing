@@ -1,0 +1,22 @@
+2025-02-01 08:39:28,902 - ERROR - Critical error occurred
+Traceback (most recent call last):
+  File "d:\My Project\Automate-Web-Penetration-Testing\main.py", line 61, in main
+    tm.prepare_tool(tool['name'])
+  File "d:\My Project\Automate-Web-Penetration-Testing\src\core\tool_manager.py", line 68, in prepare_tool
+    self.install_tool(tool)
+  File "d:\My Project\Automate-Web-Penetration-Testing\src\core\tool_manager.py", line 48, in install_tool
+    raise Exception(f"Installation failed for command '{cmd}': {process.stderr.decode()}")
+Exception: Installation failed for command 'git clone https://gitee.com/shmilylty/OneForAll.git': Cloning into 'OneForAll'...
+fatal: unable to access 'https://gitee.com/shmilylty/OneForAll.git/': The requested URL returned error: 502
+
+2025-02-01 08:41:31,897 - ERROR - Critical error occurred
+Traceback (most recent call last):
+  File "d:\My Project\Automate-Web-Penetration-Testing\main.py", line 61, in main
+    tm.prepare_tool(tool['name'])
+  File "d:\My Project\Automate-Web-Penetration-Testing\src\core\tool_manager.py", line 68, in prepare_tool
+    self.install_tool(tool)
+  File "d:\My Project\Automate-Web-Penetration-Testing\src\core\tool_manager.py", line 48, in install_tool
+    raise Exception(f"Installation failed for command '{cmd}': {process.stderr.decode()}")
+Exception: Installation failed for command 'python3 -m pip install -U pip setuptools wheel': Python was not found; run without arguments to install from the Microsoft Store, or disable this shortcut from Settings > Manage App Execution Aliases.
+
+2025-02-01 08:47:44,481 - ERROR - Execution failed: 'output_dir'

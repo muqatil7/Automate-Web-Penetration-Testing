@@ -1,0 +1,8 @@
+name: OneForAll
+description: "OneForAll is a powerful subdomain integration tool"
+install:
+  - "git clone https://gitee.com/shmilylty/OneForAll.git"
+  - "python -m pip install -U pip setuptools wheel"
+  - "cd OneForAll && pip install -r requirements.txt"
+run_command: "python oneforall.py --target {target} run"
+output_dir: OneForAll_scans

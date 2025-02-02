@@ -4,5 +4,5 @@ install:
   - "git clone https://github.com/shmilylty/OneForAll.git"
   - "python -m pip install -U pip setuptools wheel"
   - "cd OneForAll && pip install -r requirements.txt"
-run_command: "python oneforall.py --target {target} run"
+run_command: "python oneforall.py --target {target} run -o outputs/OneForAll_scans"
 output_dir: OneForAll_scans

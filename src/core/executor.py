@@ -67,7 +67,7 @@ class ToolExecutor:
             self.tracker.update_operation(tool_name, status, formatted_command, result)
             
             # Move the tool output directory to the main output directory
-            if 'output_dir' in tool and os.path.exists(tool['output_dir']):
+            if ('output_dir' in tool) and os.path.exists(tool['output_dir']):
                 shutil.move(tool['output_dir'], tool_output_dir)
             return result
             

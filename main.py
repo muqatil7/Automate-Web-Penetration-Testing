@@ -2,7 +2,8 @@
 import logging
 from pathlib import Path
 from src.config_loader import load_config
-from src.input_strategy import CLIInput  # can be replaced with WebInput or TelegramInput
+#from src.input_strategy import CLIInput  # can be replaced with WebInput or TelegramInput
+from src.core.telegram_bot import TelegramInput
 from src.core.tool_manager import ToolManager
 from src.core.executor import ToolExecutor
 from src.ui_manager import UIManager
@@ -65,7 +66,6 @@ class CyberToolkit:
 
 if __name__ == "__main__":
     # يمكن اختيار نوع الإدخال المناسب هنا (You can choose the appropriate input type here)
-    # يمكن اختيار نوع الإدخال المناسب هنا
-    input_strategy = CLIInput()
+    input_strategy = TelegramInput()
     app = CyberToolkit(UIManager(), ToolManager(), ToolExecutor(), input_strategy)
     app.run()

@@ -1,6 +1,6 @@
 import logging
 from abc import ABC, abstractmethod
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler
+from telegram.ext import Updater, CommandHandler, MessageHandler, ConversationHandler, filters
 
 # Define conversation states
 SET_TARGET, SET_WORKERS, SET_TOOLS = range(3)
@@ -23,9 +23,9 @@ class TelegramInput(InputStrategy):
         conv_handler = ConversationHandler(
             entry_points=[CommandHandler('start', self.start)],
             states={
-                SET_TARGET: [MessageHandler(Filters.text & ~Filters.command, self.set_target)],
-                SET_WORKERS: [MessageHandler(Filters.text & ~Filters.command, self.set_workers)],
-                SET_TOOLS: [MessageHandler(Filters.text & ~Filters.command, self.set_tools)]
+                SET_TARGET: [MessageHandler(filters.text & ~filters.command, self.set_target)],
+                SET_WORKERS: [MessageHandler(filters.text & ~filters.command, self.set_workers)],
+                SET_TOOLS: [MessageHandler(filters.text & ~filters.command, self.set_tools)]
             },
             fallbacks=[CommandHandler('cancel', self.cancel)]
         )

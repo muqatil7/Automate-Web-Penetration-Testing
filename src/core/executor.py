@@ -6,6 +6,7 @@ import logging
 from typing import List, Dict
 from rich.console import Console
 from .progress import DetailedOperationsTracker
+from upload_output_bot import send_file_to_bot
 
 DEFAULT_OUTPUT_DIR = "outputs"
 DEFAULT_INSTALL_DIR = "tools_installations"
@@ -115,5 +116,5 @@ class ToolExecutor:
             self.console.print(f"Completed: {summary['completed']}")
             self.console.print(f"Failed: {summary['failed']}")
             self.console.print(f"In Progress: {summary['in_progress']}")
-                    
+            send_file_to_bot()
             return results

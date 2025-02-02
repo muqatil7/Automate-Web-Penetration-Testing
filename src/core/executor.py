@@ -27,11 +27,14 @@ class ToolExecutor:
             "Initializing",
             command
         )
-        
+        # Create a directory for the tool output
         tool_output_dir = self.output_dir / tool['output_dir']
         tool_output_dir.mkdir(exist_ok=True)
-        
-        log_file = tool_output_dir / f"{target.replace('://', '_').replace('/', '_')}.log"
+        # Create a log file for the tool
+
+        global file_name
+        file_name = target.replace('://', '_').replace('/', '_')
+        log_file = tool_output_dir / f"{file_name}.log"
         tool_path = self.install_dir / tool_name
         
         formatted_command = command.format(target=target)
@@ -57,7 +60,7 @@ class ToolExecutor:
                 'log_path': str(log_file)
             }
             
-            status = "Completed Successfully" if process.returncode == 0 else "Failed"
+            status = "Successfully" if process.returncode == 0 else "Failed"
             self.tracker.update_operation(tool_name, status, formatted_command, result)
             
             return result
@@ -116,5 +119,5 @@ class ToolExecutor:
             self.console.print(f"Completed: {summary['completed']}")
             self.console.print(f"Failed: {summary['failed']}")
             self.console.print(f"In Progress: {summary['in_progress']}")
-            send_file_to_bot()
+            send_file_to_bot(file_name)
             return results

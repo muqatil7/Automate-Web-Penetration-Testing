@@ -7,6 +7,7 @@ from typing import List, Dict
 from rich.console import Console
 from .progress import DetailedOperationsTracker
 from .upload_output_bot import send_file_to_bot
+import shutil
 
 DEFAULT_OUTPUT_DIR = "outputs"
 DEFAULT_INSTALL_DIR = "tools_installations"
@@ -28,10 +29,10 @@ class ToolExecutor:
             command
         )
         # Create a directory for the tool output
-        tool_output_dir = self.output_dir / tool['output_dir']
+        tool_output_dir = self.output_dir / tool['name']
         tool_output_dir.mkdir(exist_ok=True)
-        # Create a log file for the tool
 
+        # Create a log file for the tool
         global file_name
         file_name = target.replace('://', '_').replace('/', '_')
         log_file = tool_output_dir / f"{file_name}.log"
@@ -40,8 +41,9 @@ class ToolExecutor:
         formatted_command = command.format(target=target)
         
         try:
+            # Run the command
             self.tracker.update_operation(tool_name, "Running", formatted_command)
-            
+            # Execute the command and write the output to the log file
             with open(log_file, 'w') as f:
                 process = subprocess.Popen(
                     formatted_command,
@@ -52,17 +54,17 @@ class ToolExecutor:
                     text=True
                 )
                 stdout, stderr = process.communicate()
-                
+            #    
             result = {
                 'tool': tool_name,
                 'command': formatted_command,
                 'exit_code': process.returncode,
                 'log_path': str(log_file)
             }
-            
+            # Check if the command was successful
             status = "Successfully" if process.returncode == 0 else "Failed"
             self.tracker.update_operation(tool_name, status, formatted_command, result)
-            
+            shutil.move(tool['output_dir'], tool_output_dir)
             return result
             
         except Exception as e:
@@ -119,5 +121,7 @@ class ToolExecutor:
             self.console.print(f"Completed: {summary['completed']}")
             self.console.print(f"Failed: {summary['failed']}")
             self.console.print(f"In Progress: {summary['in_progress']}")
+
+            
             send_file_to_bot(file_name)
             return results

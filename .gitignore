@@ -1,5 +1,10 @@
-tools_installations/
-outputs/
+# This .gitignore file specifies files and directories that should be ignored by Git.
+# Ignoring test files and directories
 tests/
+# Ignoring tools installations
+tools_installations/
+# Ignoring output files and directories
+outputs/
 outputs.zip
+# Ignoring log files
 cyber_toolkit.log

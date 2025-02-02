@@ -1,4 +1,3 @@
-# cyber_toolkit/main.py
 import argparse
 from pathlib import Path
 from typing import List
@@ -8,6 +7,10 @@ from src.ui_manager import UIManager
 import logging
 
 def setup_logging():
+    """
+    Set up logging configuration.
+    Logs will be saved to 'cyber_toolkit.log' with INFO level.
+    """
     logging.basicConfig(
         filename='cyber_toolkit.log',
         level=logging.INFO,
@@ -15,7 +18,13 @@ def setup_logging():
     )
 
 def main():
+    """
+    Main function to orchestrate the cybersecurity tools.
+    Parses command-line arguments, initializes components, and runs the selected tools.
+    """
     setup_logging()
+    
+    # Argument parser setup
     parser = argparse.ArgumentParser(description="Cybersecurity Tool Orchestrator")
     parser.add_argument("-t", "--target", required=True, help="Target URL or IP")
     parser.add_argument("-w", "--workers", type=int, default=4, help="Number of parallel workers")
@@ -34,20 +43,29 @@ def main():
     ui.show_banner()
     
     if args.list_tools:
+        # List available tools and exit
         ui.list_tools(tm.tools)
         return
     
     tools_to_run = []
-    if args.all_tools:
-        tools_to_run = list(tm.tools.values())
-    else:
+
+    if args.tools:
+        # Run specific tools
         for tool_name in args.tools:
             tool = tm.get_tool(tool_name)
             if tool:
-                tools_to_run.append(tool)
+                # Ensure the tool dictionary contains necessary information
+                if 'name' in tool and 'command' in tool:
+                    tools_to_run.append(tool)
+                else:
+                    ui.show_error(f"Tool {tool_name} is missing required information")
             else:
                 ui.show_error(f"Tool {tool_name} not found")
-    
+    else:
+        # Run all available tools
+        tools_to_run = list(tm.tools.values())
+
+    # Ensure at least one tool is selected
     if not tools_to_run:
         ui.show_error("No tools selected to run!")
         return
@@ -72,9 +90,6 @@ def main():
         ui.show_error(f"Critical error: {str(e)}")
         logging.exception("Critical error occurred")
 
-
-
 if __name__ == "__main__":
     main()
 
-    

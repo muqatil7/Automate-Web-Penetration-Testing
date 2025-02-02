@@ -1,4 +1,5 @@
 # cyber_toolkit/core/executor.py
+import os
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -66,7 +67,7 @@ class ToolExecutor:
             self.tracker.update_operation(tool_name, status, formatted_command, result)
             
             # Move the tool output directory to the main output directory
-            if tool['output_dir'].exists():
+            if os.path.exists(tool['output_dir']) :
                 shutil.move(tool['output_dir'], tool_output_dir)
             return result
             

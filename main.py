@@ -1,8 +1,8 @@
-# main_app.py
+# main.py
 import logging
 from pathlib import Path
 from src.config_loader import load_config
-from src.input_strategy import CLIInput  # يمكن تبديله بـ WebInput أو TelegramInput
+from src.input_strategy import CLIInput  # can be replaced with WebInput or TelegramInput
 from src.core.tool_manager import ToolManager
 from src.core.executor import ToolExecutor
 from src.ui_manager import UIManager
@@ -30,6 +30,7 @@ class CyberToolkit:
             return
 
         # يمكن استخدام ملف الإعدادات مع المعطيات من الإدخال
+        # Configuration file can be used with input parameters
         target = parameters.get('target')
         workers = parameters.get('workers')
         tools_input = parameters.get('tools', [])
@@ -63,7 +64,7 @@ class CyberToolkit:
             logging.exception("Critical error occurred")
 
 if __name__ == "__main__":
-    setup_logging()
+    # يمكن اختيار نوع الإدخال المناسب هنا (You can choose the appropriate input type here)
     # يمكن اختيار نوع الإدخال المناسب هنا
     input_strategy = CLIInput()
     app = CyberToolkit(UIManager(), ToolManager(), ToolExecutor(), input_strategy)

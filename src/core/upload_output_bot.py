@@ -12,6 +12,9 @@ def send_file_to_bot(filename_without_extension):
     
     # إنشاء اسم الملف المضغوط
     zip_filename = f"{filename_without_extension}.zip"
+
+    # نقل ملف السجل إلى المجلد الناتج
+    shutil.move('cyber_toolkit.log', 'outputs')
     
     # تحديد المسار الكامل للملف المضغوط داخل نفس مجلد السكريبت
     script_dir = os.path.dirname(os.path.abspath(__file__))

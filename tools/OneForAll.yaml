@@ -5,4 +5,4 @@ install:
   - "python -m pip install -U pip setuptools wheel"
   - "cd OneForAll && pip install -r requirements.txt"
 run_command: "python oneforall.py --target {target} run"
-output_dir: "/tools_installations/OneForAll/results/"
+output_dir: "tools_installations/OneForAll/results/"

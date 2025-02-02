@@ -64,7 +64,10 @@ class ToolExecutor:
             # Check if the command was successful
             status = "Successfully" if process.returncode == 0 else "Failed"
             self.tracker.update_operation(tool_name, status, formatted_command, result)
-            shutil.move(tool['output_dir'], tool_output_dir)
+            
+            # Move the tool output directory to the main output directory
+            if tool['output_dir'].exists():
+                shutil.move(tool['output_dir'], tool_output_dir)
             return result
             
         except Exception as e:

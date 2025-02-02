@@ -109,7 +109,7 @@ class TelegramInput(InputStrategy):
 # Example usage:
 if __name__ == "__main__":
     # Replace 'YOUR_TELEGRAM_BOT_TOKEN' with your actual Telegram bot token.
-    TELEGRAM_BOT_TOKEN = "YOUR_TELEGRAM_BOT_TOKEN"
+    TELEGRAM_BOT_TOKEN = "8067500091:AAGc9efhwdEP3X9S09vJt6IXN0BpxolSYg0"
     telegram_input = TelegramInput(TELEGRAM_BOT_TOKEN)
     # get_parameters ستعمل وتبقى في انتظار تفاعل المستخدم عبر Telegram
     parameters = telegram_input.get_parameters()

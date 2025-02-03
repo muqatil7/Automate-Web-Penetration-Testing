@@ -47,7 +47,7 @@ class TelegramUIManager(UIManager):
         """Format and return a list of available tools for Telegram."""
         message = "✨ *Available Security Tools:*\n\n"
         for name, tool in tools.items():
-            message += f"• *{name}*\n"
+            message += f"🔹 *{name}*\n"
             message += f"   └ _{tool['description']}_\n\n"
         return message
 
@@ -237,13 +237,13 @@ class TelegramBot:
 
             await query.edit_message_text("🚀 *Scan started!* You will receive progress updates shortly.")
             asyncio.create_task(self.execute_scan(query.message.chat_id, scan_info, context))
-
+    # -------------------------------------------------------------------------
+    # تنفيذ الأدوات وإرسال النتائج
+    # -------------------------------------------------------------------------
     async def execute_scan(self, chat_id: int, scan_info: Dict[str, Any], context: ContextTypes.DEFAULT_TYPE) -> None:
-        """Execute the scan with real-time updates to the user."""
         ui_manager = TelegramUIManager(context.bot, chat_id)
         self.cyber_toolkit.ui = ui_manager
 
-        # إرسال رسالة أولية قبل بدء الفحص
         await context.bot.send_message(
             chat_id=chat_id,
             text="🚀 *Initializing Scan*\n\nPreparing tools...",
@@ -251,7 +251,6 @@ class TelegramBot:
         )
 
         try:
-            # تحضير البيئة
             await ui_manager.send_progress("Setting up environment...")
             self.cyber_toolkit.prepare_environment(scan_info["tools"])
 
@@ -259,22 +258,22 @@ class TelegramBot:
                 f"Starting scan on `{scan_info['target']}` using {len(scan_info['tools'])} tools with {scan_info['workers']} workers"
             )
 
-            # تنفيذ الأدوات المحددة
-            results = self.cyber_toolkit.execute_tools(
+            # تشغيل تنفيذ الأدوات في خيط منفصل لتجنب حجب الـ event loop
+            results = await asyncio.to_thread(
+                self.cyber_toolkit.execute_tools,
                 scan_info["tools"],
                 scan_info["target"],
                 scan_info["workers"]
             )
 
-            # عرض النتائج مع حساب زمن التنفيذ (إذا كانت القيمة متوفرة)
-          #  formatted_results = ui_manager.display_results(results)
-         #   await context.bot.send_message(
-         #       chat_id=chat_id,
-          #      text=formatted_results,
-             #   parse_mode="Markdown"
-          #  )
+            # يمكنك إرسال النتائج أو الملخص كما هو معمول به
+            formatted_results = ui_manager.display_results(results)
+            await context.bot.send_message(
+                chat_id=chat_id,
+                text=formatted_results,
+                parse_mode="Markdown"
+            )
 
-            # إرسال ملخص الفحص
             status_manager = ExecutionStatusManager()
             status_manager.load_status()
             summary = status_manager.get_summary()
@@ -292,7 +291,6 @@ class TelegramBot:
                 parse_mode="Markdown"
             )
 
-            # إعلام انتهاء الفحص
             await context.bot.send_message(
                 chat_id=chat_id,
                 text="✅ *Scan Completed!* All tools have finished execution.",
@@ -310,6 +308,7 @@ class TelegramBot:
         finally:
             self.active_scans.pop(chat_id, None)
 
+
     async def scan(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         """Handle the /scan command, validate input, and prompt the user for confirmation."""
         if not context.args:
@@ -320,7 +319,7 @@ class TelegramBot:
                 "🔹 `/scan example.com` – Scan with defaults\n"
                 "🔹 `/scan example.com 4 all` – Run all tools\n"
                 "🔹 `/scan example.com 2 tool1,tool2` – Run specific tools\n\n"
-                "🔹 *Defaults:* Workers: 4 | Mode: all"
+                "📌 *Defaults:* Workers: 4 | Mode: all"
             )
             await update.message.reply_text(usage_message, parse_mode="Markdown")
             return

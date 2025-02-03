@@ -1,26 +1,22 @@
 {
   "OneForAll": {
-    "status": "Failed",
+    "status": "Execution Error",
     "command": "python oneforall.py --target {target} run",
-    "start_time": "2025-02-03T14:56:23.841184",
-    "end_time": "2025-02-03T14:56:25.067469",
+    "start_time": "2025-02-03T17:04:50.972359",
+    "end_time": "2025-02-03T17:04:54.296455",
     "result": {
       "tool": "OneForAll",
       "command": "python oneforall.py --target https://companyhub.com run",
-      "exit_code": 1,
-      "log_path": "outputs\\OneForAll\\https_companyhub.com.log"
+      "exit_code": -1,
+      "log_path": "outputs\\OneForAll\\https_companyhub.com.log",
+      "error": "Destination path 'outputs\\OneForAll\\results' already exists"
     }
   },
   "robofinder": {
-    "status": "Successfully",
+    "status": "Running",
     "command": "python robofinder/robofinder.py -u {target} -s",
-    "start_time": "2025-02-03T14:56:23.842183",
-    "end_time": "2025-02-03T14:57:04.670004",
-    "result": {
-      "tool": "robofinder",
-      "command": "python robofinder/robofinder.py -u https://companyhub.com -s",
-      "exit_code": 0,
-      "log_path": "outputs\\robofinder\\https_companyhub.com.log"
-    }
+    "start_time": "2025-02-03T17:04:50.973324",
+    "end_time": null,
+    "result": null
   }
 }

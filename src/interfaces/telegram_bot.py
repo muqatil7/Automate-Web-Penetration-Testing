@@ -157,16 +157,27 @@ class TelegramBot:
 
         status_message = (
             "🤖 *Bot Status Overview*\n\n"
-            "📝 *Scan Execution:*\n"
-            f"• Total Operations: {summary['total']}\n"
-            f"• Completed: {summary['completed']}\n"
-            f"• Failed: {summary['failed']}\n"
-            f"• In Progress: {summary['in_progress']}\n\n"
+            "📝 *Scan Execution:*\n\n"
+            "📣 Total Operations: {total}\n"
+            "————————————\n"
+            "🟡 In Progress: {in_progress}\n"
+            "————————————\n"
+            "🟢 Completed: {completed}\n"
+            "————————————\n"
+            "🔴 Failed: {failed}\n"
+            "————————————\n\n"
             "📌 *Bot Information:*\n"
             "• Version: 1.0.0\n"
-            f"• Active Since: {self.start_time.strftime('%Y-%m-%d %H:%M:%S')}\n"
+            "• Active Since: {active_since}\n"
             "• Mode: Security Assessment\n\n"
-            "👇 *Quick Actions:* Select an option below for details."
+            "👇 Quick Actions: Select an option below for details."
+            
+        ).format(
+            total=summary["total"],
+            in_progress=summary["in_progress"],
+            completed=summary["completed"],
+            failed=summary["failed"],
+            active_since=self.start_time.strftime("%Y-%m-%d %H:%M:%S")
         )
 
         await update.message.reply_text(
@@ -267,12 +278,12 @@ class TelegramBot:
             )
 
             # يمكنك إرسال النتائج أو الملخص كما هو معمول به
-            formatted_results = ui_manager.display_results(results)
-            await context.bot.send_message(
-                chat_id=chat_id,
-                text=formatted_results,
-                parse_mode="Markdown"
-            )
+         #   formatted_results = ui_manager.display_results(results)
+         #   await context.bot.send_message(
+           #     chat_id=chat_id,
+         #       text=formatted_results,
+          #      parse_mode="Markdown"
+          #  )
 
             status_manager = ExecutionStatusManager()
             status_manager.load_status()

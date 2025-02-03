@@ -1,4 +1,5 @@
 #from src.interfaces.CLI_parser import CLIInput
+import asyncio
 from src.interfaces.telegram_bot import TelegramBot
 
 if __name__ == "__main__":
@@ -7,4 +8,4 @@ if __name__ == "__main__":
 
 
     bot = TelegramBot(BOT_TOKEN)
-    bot.run()
+    asyncio.run(bot.run())

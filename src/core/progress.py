@@ -1,4 +1,4 @@
-# cyber_toolkit/core/progress.py
+# src/core/progress.py
 from rich.console import Console
 from rich.table import Table
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TimeElapsedColumn

@@ -1,3 +1,4 @@
+# src/app.py
 import logging
 from pathlib import Path
 from src.interfaces.config_loader import load_config
@@ -57,4 +58,4 @@ class CyberToolkit:
     def handle_tool_listing(self):
         """Handle tool listing request"""
         self.ui.list_tools(self.tm.tools)
-        return True
+        return self.tm.tools

@@ -1,4 +1,4 @@
 rich
 pyyaml
 requests
-python-telegram-bot
+telebot

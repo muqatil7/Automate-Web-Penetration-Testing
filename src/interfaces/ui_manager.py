@@ -1,4 +1,4 @@
-# cyber_toolkit/ui_manager.py
+# src/interfaces/ui_manager.py
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel

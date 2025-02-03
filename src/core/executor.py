@@ -20,7 +20,7 @@ class ToolExecutor:
         self.install_dir = Path(install_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.logger = logging.getLogger(__name__)
-   #     self.tracker = DetailedOperationsTracker()
+        self.tracker_CLI = DetailedOperationsTracker()
         self.console = Console()  # Initialize the console object
         self.tracker = ExecutionStatusManager()
     def _run_command(self, command: str, tool: dict, target: str):
@@ -102,7 +102,7 @@ class ToolExecutor:
             for future, tool in zip(futures, tools):
                 try:
                     results.append(future.result())
-#                    self.tracker.display_operations()
+                    self.tracker_CLI.display_operations()
                 except Exception as e:
                     error_result = {
                         'error': str(e),
@@ -117,7 +117,7 @@ class ToolExecutor:
                         error_result
                     )
                     self.logger.error(f"Execution failed for tool {tool['name']} with command {tool['run_command']} on target {target}: {str(e)}")
-#                    self.tracker.display_operations()
+                    self.tracker_CLI.display_operations()
             
             # Display final summary
             summary = self.tracker.get_summary()

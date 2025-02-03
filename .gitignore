@@ -8,3 +8,5 @@ outputs/
 outputs.zip
 # Ignoring log files
 cyber_toolkit.log
+
+execution_status.json

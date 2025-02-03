@@ -234,7 +234,7 @@ Select an option below for more details."""
                 await query.edit_message_text("❌ Scan configuration not found!")
                 return
 
-            await query.edit_message_text("🚀 Scan started! You'll receive progress updates...")
+            await query.edit_message_text("Scan started! You'll receive progress updates...")
             asyncio.create_task(
                 self.execute_scan(query.message.chat_id, scan_info, context)
             )
@@ -261,6 +261,13 @@ Select an option below for more details."""
                 f"Running {len(scan_info['tools'])} tools with {scan_info['workers']} workers"
             )
 
+            # Execute tools
+            results = self.cyber_toolkit.execute_tools(
+                scan_info['tools'],
+                scan_info['target'],
+                scan_info['workers']
+            )
+
             # Send results
             status_manager = ExecutionStatusManager()
             status_manager.load_status()
@@ -273,6 +280,8 @@ Select an option below for more details."""
 - Failed: {summary['failed']}
 - In Progress: {summary['in_progress']}
 
+👆 For more details, use /status command.
+
 """
 
             await context.bot.send_message(
@@ -281,12 +290,6 @@ Select an option below for more details."""
                 parse_mode='Markdown'
             )
 
-            # Execute tools
-            results = self.cyber_toolkit.execute_tools(
-                scan_info['tools'],
-                scan_info['target'],
-                scan_info['workers']
-            )
 
             # Send completion message
             await context.bot.send_message(

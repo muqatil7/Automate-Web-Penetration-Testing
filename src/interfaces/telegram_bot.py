@@ -13,7 +13,7 @@ import re
 from datetime import datetime
 from io import StringIO
 from typing import Optional, List, Dict, Any
-from pathlib import Path
+from telegram import BotCommand
 
 class TelegramUIManager(UIManager):
     """Custom UI Manager for Telegram that formats output for Telegram"""
@@ -387,9 +387,22 @@ Please confirm to start the scan:"""
         app.add_handler(CallbackQueryHandler(self.button_callback))
         app.add_handler(CommandHandler("status", self.status))
 
+
+    # Set bot commands menu
+        commands = [
+            BotCommand("start", "start menu"),
+            BotCommand("help", "how to use the bot"),
+            BotCommand("list", "list of tools"),
+            BotCommand("scan", "start a scan"),
+            BotCommand("status", "bot status"),
+        ]
+        app.bot.set_my_commands(commands)
+
         # Start the bot
         app.run_polling()
-        self.start()
+
+    #    bot.send_message(chat_id=8067500091, text="I'm a bot, please talk to me!")
+     #   self.start()
 
 
 if __name__ == "__main__":

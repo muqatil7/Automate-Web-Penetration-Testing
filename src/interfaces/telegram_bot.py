@@ -72,10 +72,10 @@ class TelegramUIManager(UIManager):
         """Return a formatted message indicating the start of a scan."""
         return (
             "🚀 *New Scan Started*\n\n"
-            f"• *Target:* `{target}`\n"
-            f"• *Tools:* {num_tools}\n"
-            f"• *Workers:* {workers}\n"
-            f"• *Start Time:* {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+            f"🔹 *Target:* `{target}`\n"
+            f"🔹 *Tools:* {num_tools}\n"
+            f"🔹 *Workers:* {workers}\n"
+            f"🔹 *Start Time:* {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
         )
 
 
@@ -193,10 +193,10 @@ class TelegramBot:
                     time_info = "N/A"
                 details_message += (
                     f"*{op.tool_name}*\n"
-                    f"• *Status:* {op.status}\n"
-                    f"• *Start:* {op.start_time.strftime('%Y-%m-%d %H:%M:%S')}\n"
-                    f"• *End:* {op.end_time.strftime('%Y-%m-%d %H:%M:%S') if op.end_time else 'N/A'}\n"
-                    f"• *Duration:* {time_info}\n\n"
+                    f"🔹 *Status:* {op.status}\n"
+                    f"🔹 *Start:* {op.start_time.strftime('%Y-%m-%d %H:%M:%S')}\n"
+                    f"🔹 *End:* {op.end_time.strftime('%Y-%m-%d %H:%M:%S') if op.end_time else 'N/A'}\n"
+                    f"🔹 *Duration:* {time_info}\n\n"
                 )
             await query.edit_message_text(details_message, parse_mode="Markdown")
 
@@ -204,24 +204,24 @@ class TelegramBot:
             summary = status_manager.get_summary()
             summary_message = (
                 "📊 *Detailed Scan Summary*\n\n"
-                f"• Total Operations: {summary['total']}\n"
-                f"• Completed: {summary['completed']}\n"
-                f"• Failed: {summary['failed']}\n"
-                f"• In Progress: {summary['in_progress']}\n\n"
+                f"🔹 Total Operations: {summary['total']}\n"
+                f"🔹 Completed: {summary['completed']}\n"
+                f"🔹 Failed: {summary['failed']}\n"
+                f"🔹 In Progress: {summary['in_progress']}\n\n"
                 "📈 *Performance Metrics:*\n"
-                f"• Success Rate: {(summary['completed'] / summary['total'] * 100) if summary['total'] > 0 else 0:.2f}%\n"
-                f"• Failure Rate: {(summary['failed'] / summary['total'] * 100) if summary['total'] > 0 else 0:.2f}%"
+                f"🔹 Success Rate: {(summary['completed'] / summary['total'] * 100) if summary['total'] > 0 else 0:.2f}%\n"
+                f"🔹 Failure Rate: {(summary['failed'] / summary['total'] * 100) if summary['total'] > 0 else 0:.2f}%"
             )
             await query.edit_message_text(summary_message, parse_mode="Markdown")
 
         elif query.data == "system_info":
             system_message = (
                 "🖥️ *System Information*\n\n"
-                f"• Current Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
-                f"• Python Version: {sys.version.split()[0]}\n"
-                f"• Active Tools: {len(self.cyber_toolkit.tm.tools)}\n"
-                "• Mode: Security Assessment\n"
-                f"• Bot Uptime: {datetime.now() - self.start_time}"
+                f"🔹 Current Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+                f"🔹 Python Version: {sys.version.split()[0]}\n"
+                f"🔹 Active Tools: {len(self.cyber_toolkit.tm.tools)}\n"
+                "🔹 Mode: Security Assessment\n"
+                f"🔹 Bot Uptime: {datetime.now() - self.start_time}"
             )
             await query.edit_message_text(system_message, parse_mode="Markdown")
 
@@ -267,12 +267,12 @@ class TelegramBot:
             )
 
             # عرض النتائج مع حساب زمن التنفيذ (إذا كانت القيمة متوفرة)
-            formatted_results = ui_manager.display_results(results)
-            await context.bot.send_message(
-                chat_id=chat_id,
-                text=formatted_results,
-                parse_mode="Markdown"
-            )
+          #  formatted_results = ui_manager.display_results(results)
+         #   await context.bot.send_message(
+         #       chat_id=chat_id,
+          #      text=formatted_results,
+             #   parse_mode="Markdown"
+          #  )
 
             # إرسال ملخص الفحص
             status_manager = ExecutionStatusManager()
@@ -280,11 +280,11 @@ class TelegramBot:
             summary = status_manager.get_summary()
             summary_message = (
                 "📊 *Scan Summary:*\n\n"
-                f"• Total Operations: {summary['total']}\n"
-                f"• Completed: {summary['completed']}\n"
-                f"• Failed: {summary['failed']}\n"
-                f"• In Progress: {summary['in_progress']}\n\n"
-                "👆 For more details, use the /status command."
+                f"🔹 Total Operations: {summary['total']}\n"
+                f"🔹 Completed: {summary['completed']}\n"
+                f"🔹 Failed: {summary['failed']}\n"
+                f"🔹 In Progress: {summary['in_progress']}\n\n"
+                "💹 For more details, use the /status command."
             )
             await context.bot.send_message(
                 chat_id=chat_id,
@@ -317,10 +317,10 @@ class TelegramBot:
                 "⚠️ *Scan Usage:*\n\n"
                 "`/scan <target> [workers] [mode]`\n\n"
                 "💡 *Examples:*\n"
-                "• `/scan example.com` – Scan with defaults\n"
-                "• `/scan example.com 4 all` – Run all tools\n"
-                "• `/scan example.com 2 tool1,tool2` – Run specific tools\n\n"
-                "• *Defaults:* Workers: 4 | Mode: all"
+                "🔹 `/scan example.com` – Scan with defaults\n"
+                "🔹 `/scan example.com 4 all` – Run all tools\n"
+                "🔹 `/scan example.com 2 tool1,tool2` – Run specific tools\n\n"
+                "🔹 *Defaults:* Workers: 4 | Mode: all"
             )
             await update.message.reply_text(usage_message, parse_mode="Markdown")
             return
@@ -357,10 +357,10 @@ class TelegramBot:
 
         confirm_message = (
             "🎯 *Scan Configuration*\n\n"
-            f"• *Target:* `{target}`\n"
-            f"• *Workers:* {workers}\n"
-            f"• *Tools:* {len(tools_to_run)}\n"
-            f"• *Mode:* {mode}\n\n"
+            f"🔹 *Target:* `{target}`\n"
+            f"🔹 *Workers:* {workers}\n"
+            f"🔹 *Tools:* {len(tools_to_run)}\n"
+            f"🔹 *Mode:* {mode}\n\n"
             "🛠️ *Selected Tools:*\n"
             f"{', '.join(t['name'] for t in tools_to_run)}\n\n"
             "Please confirm to start the scan:"

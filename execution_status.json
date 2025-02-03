@@ -13,10 +13,15 @@
     }
   },
   "robofinder": {
-    "status": "Running",
+    "status": "Successfully",
     "command": "python robofinder/robofinder.py -u {target} -s",
     "start_time": "2025-02-03T17:04:50.973324",
-    "end_time": null,
-    "result": null
+    "end_time": "2025-02-03T17:05:36.924077",
+    "result": {
+      "tool": "robofinder",
+      "command": "python robofinder/robofinder.py -u https://companyhub.com -s",
+      "exit_code": 0,
+      "log_path": "outputs\\robofinder\\https_companyhub.com.log"
+    }
   }
 }

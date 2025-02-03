@@ -3,7 +3,6 @@
 import asyncio
 import logging
 import sys
-import re
 from datetime import datetime
 from io import StringIO
 from pathlib import Path
@@ -13,10 +12,8 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, BotComm
 from telegram.ext import (
     Application,
     CommandHandler,
-    MessageHandler,
     CallbackQueryHandler,
     ContextTypes,
-    filters,
 )
 
 from src.app import CyberToolkit
@@ -48,34 +45,37 @@ class TelegramUIManager(UIManager):
 
     def list_tools(self, tools: Dict[str, Dict[str, Any]]) -> str:
         """Format and return a list of available tools for Telegram."""
-        message = "*Available Security Tools:*\n\n"
+        message = "✨ *Available Security Tools:*\n\n"
         for name, tool in tools.items():
-            message += f"🔹 *{name}*\n"
-            message += f"  └ {tool['description']}\n\n"
+            message += f"• *{name}*\n"
+            message += f"   └ _{tool['description']}_\n\n"
         return message
 
     def display_results(self, results: List[Dict[str, Any]]) -> str:
-        """Format and return scan results for Telegram."""
-        message = "*🎯 Scan Results:*\n\n"
+        """Format and return scan results for Telegram including execution time if available."""
+        message = "🎯 *Scan Results:*\n\n"
         for result in results:
             status_icon = "✅" if result.get("exit_code") == 0 else "❌"
             tool_name = result.get("tool", "unknown")
             error = result.get("error", "")
+            time_taken = result.get("time_taken")
             message += f"{status_icon} *{tool_name}*\n"
-            message += f"  └ Status: {status_icon} {'Success' if status_icon == '✅' else 'Failed'}\n"
+            message += f"   └ *Status:* {'Success' if status_icon == '✅' else 'Failed'}\n"
+            if time_taken is not None:
+                message += f"   └ *Time Taken:* {time_taken:.2f} seconds\n"
             if error:
-                message += f"  └ Error: `{error}`\n"
-            message += f"  └ Log: `{result.get('log_path', 'N/A')}`\n\n"
+                message += f"   └ *Error:* `{error}`\n"
+            message += f"   └ *Log:* `{result.get('log_path', 'N/A')}`\n\n"
         return message
 
     def show_scan_start(self, target: str, num_tools: int, workers: int) -> str:
         """Return a formatted message indicating the start of a scan."""
         return (
-            f"🎯 *New Scan Started*\n\n"
-            f"Target: `{target}`\n"
-            f"Tools: {num_tools}\n"
-            f"Workers: {workers}\n"
-            f"Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+            "🚀 *New Scan Started*\n\n"
+            f"• *Target:* `{target}`\n"
+            f"• *Tools:* {num_tools}\n"
+            f"• *Workers:* {workers}\n"
+            f"• *Start Time:* {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
         )
 
 
@@ -98,40 +98,39 @@ class TelegramBot:
         welcome_message = (
             "🛡️ *Cyber Security Tool Bot*\n\n"
             "Welcome to your security assessment assistant!\n\n"
-            "*Status Information:*\n"
-            "🔹 Bot Version: 1.0.0\n"
-            f"🔹 Available Tools: {tool_count}\n"
-            "🔹 Status: Active\n"
-            f"🔹 Last Update: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
-            "*Quick Start:*\n"
-            "1️⃣ Use /list to see available tools\n"
-            "2️⃣ Use /scan to start assessment\n"
-            "3️⃣ Use /help for detailed usage\n\n"
+            "📌 *Status Information:*\n"
+            f"• *Bot Version:* 1.0.0\n"
+            f"• *Available Tools:* {tool_count}\n"
+            "• *Status:* Active\n"
+            f"• *Last Update:* {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
+            "🚦 *Quick Start:*\n"
+            "1️⃣ Use /list to view available tools\n"
+            "2️⃣ Use /scan to initiate a scan\n"
+            "3️⃣ Use /help for more instructions\n\n"
             "⚠️ *Security Notice:*\n"
-            "Please ensure you have authorization before scanning any target."
+            "Ensure you have proper authorization before scanning any target."
         )
-
         await update.message.reply_text(welcome_message, parse_mode="Markdown")
 
     async def help(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         """Handle the /help command by displaying available commands and usage examples."""
         help_text = (
-            "*Available Commands:*\n\n"
+            "📖 *Available Commands:*\n\n"
             "/start - Show welcome message and status\n"
             "/scan - Start a new security assessment\n"
             "/list - Show available security tools\n"
-            "/status - View current bot and scan status\n"
-            "/help - Show this help message\n\n"
-            "*Scan Usage:*\n"
+            "/status - View bot and scan status\n"
+            "/help - Display this help message\n\n"
+            "🔍 *Scan Usage:*\n"
             "`/scan <target> [workers] [mode]`\n\n"
-            "*Examples:*\n"
-            "• `/scan example.com` - Default scan\n"
-            "• `/scan example.com 4 all` - All tools\n"
-            "• `/scan example.com 2 tool1,tool2` - Specific tools\n\n"
-            "*Parameters:*\n"
-            "• target: URL or IP to scan\n"
-            "• workers: Number of parallel tasks (default: 4)\n"
-            "• mode: 'all' or specific tool names"
+            "💡 *Examples:*\n"
+            "• `/scan example.com` – Default scan\n"
+            "• `/scan example.com 4 all` – Run all tools\n"
+            "• `/scan example.com 2 tool1,tool2` – Run specific tools\n\n"
+            "📌 *Parameters:*\n"
+            "• *target:* URL or IP to scan\n"
+            "• *workers:* Number of parallel tasks (default is 4)\n"
+            "• *mode:* 'all' or comma separated tool names"
         )
         await update.message.reply_text(help_text, parse_mode="Markdown")
 
@@ -152,23 +151,22 @@ class TelegramBot:
                 InlineKeyboardButton("🔍 Tool Details", callback_data="tool_details"),
                 InlineKeyboardButton("📊 Scan Summary", callback_data="scan_summary"),
             ],
-            [InlineKeyboardButton("🛠️ System Info", callback_data="system_info")],
+            [InlineKeyboardButton("🖥️ System Info", callback_data="system_info")],
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
 
         status_message = (
             "🤖 *Bot Status Overview*\n\n"
-            "*Scan Execution:*\n"
+            "📝 *Scan Execution:*\n"
             f"• Total Operations: {summary['total']}\n"
             f"• Completed: {summary['completed']}\n"
             f"• Failed: {summary['failed']}\n"
             f"• In Progress: {summary['in_progress']}\n\n"
-            "*Bot Information:*\n"
+            "📌 *Bot Information:*\n"
             "• Version: 1.0.0\n"
             f"• Active Since: {self.start_time.strftime('%Y-%m-%d %H:%M:%S')}\n"
-            "• Running Mode: Security Assessment\n\n"
-            "*Quick Actions:*\n"
-            "Select an option below for more details."
+            "• Mode: Security Assessment\n\n"
+            "👇 *Quick Actions:* Select an option below for details."
         )
 
         await update.message.reply_text(
@@ -185,23 +183,32 @@ class TelegramBot:
 
         if query.data == "tool_details":
             operations = status_manager.get_all_operations()
-            details_message = "*🔍 Tool Execution Details:*\n\n"
+            details_message = "🔍 *Tool Execution Details:*\n\n"
             for op in operations:
-                details_message += f"*{op.tool_name}*\n"
-                details_message += f"• Status: {op.status}\n"
-                details_message += f"• Start Time: {op.start_time.strftime('%Y-%m-%d %H:%M:%S')}\n"
-                details_message += f"• End Time: {op.end_time.strftime('%Y-%m-%d %H:%M:%S') if op.end_time else 'N/A'}\n\n"
+                # حساب زمن التنفيذ إذا كانت بيانات الوقت متوفرة
+                if op.start_time and op.end_time:
+                    exec_time = (op.end_time - op.start_time).total_seconds()
+                    time_info = f"{exec_time:.2f} sec"
+                else:
+                    time_info = "N/A"
+                details_message += (
+                    f"*{op.tool_name}*\n"
+                    f"• *Status:* {op.status}\n"
+                    f"• *Start:* {op.start_time.strftime('%Y-%m-%d %H:%M:%S')}\n"
+                    f"• *End:* {op.end_time.strftime('%Y-%m-%d %H:%M:%S') if op.end_time else 'N/A'}\n"
+                    f"• *Duration:* {time_info}\n\n"
+                )
             await query.edit_message_text(details_message, parse_mode="Markdown")
 
         elif query.data == "scan_summary":
             summary = status_manager.get_summary()
             summary_message = (
                 "📊 *Detailed Scan Summary*\n\n"
-                f"• Total Scan Operations: {summary['total']}\n"
-                f"• Successfully Completed: {summary['completed']}\n"
-                f"• Failed Operations: {summary['failed']}\n"
-                f"• Operations In Progress: {summary['in_progress']}\n\n"
-                "*Performance Metrics:*\n"
+                f"• Total Operations: {summary['total']}\n"
+                f"• Completed: {summary['completed']}\n"
+                f"• Failed: {summary['failed']}\n"
+                f"• In Progress: {summary['in_progress']}\n\n"
+                "📈 *Performance Metrics:*\n"
                 f"• Success Rate: {(summary['completed'] / summary['total'] * 100) if summary['total'] > 0 else 0:.2f}%\n"
                 f"• Failure Rate: {(summary['failed'] / summary['total'] * 100) if summary['total'] > 0 else 0:.2f}%"
             )
@@ -213,23 +220,22 @@ class TelegramBot:
                 f"• Current Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
                 f"• Python Version: {sys.version.split()[0]}\n"
                 f"• Active Tools: {len(self.cyber_toolkit.tm.tools)}\n"
-                "• Current Mode: Security Assessment\n"
+                "• Mode: Security Assessment\n"
                 f"• Bot Uptime: {datetime.now() - self.start_time}"
             )
             await query.edit_message_text(system_message, parse_mode="Markdown")
 
-        # التعامل مع أزرار إدارة عمليات الفحص
         elif query.data == "scan_cancel":
             self.active_scans.pop(query.message.chat_id, None)
-            await query.edit_message_text("🚫 Scan cancelled!")
+            await query.edit_message_text("🚫 *Scan Cancelled!*")
 
         elif query.data == "scan_confirm":
             scan_info = self.active_scans.get(query.message.chat_id)
             if not scan_info:
-                await query.edit_message_text("❌ Scan configuration not found!")
+                await query.edit_message_text("❌ *Scan configuration not found!*")
                 return
 
-            await query.edit_message_text("Scan started! You'll receive progress updates...")
+            await query.edit_message_text("🚀 *Scan started!* You will receive progress updates shortly.")
             asyncio.create_task(self.execute_scan(query.message.chat_id, scan_info, context))
 
     async def execute_scan(self, chat_id: int, scan_info: Dict[str, Any], context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -237,7 +243,7 @@ class TelegramBot:
         ui_manager = TelegramUIManager(context.bot, chat_id)
         self.cyber_toolkit.ui = ui_manager
 
-        # إرسال رسالة أولية للمستخدم قبل بدء الفحص
+        # إرسال رسالة أولية قبل بدء الفحص
         await context.bot.send_message(
             chat_id=chat_id,
             text="🚀 *Initializing Scan*\n\nPreparing tools...",
@@ -245,13 +251,12 @@ class TelegramBot:
         )
 
         try:
-            # تحضير البيئة والتنفيذ
+            # تحضير البيئة
             await ui_manager.send_progress("Setting up environment...")
             self.cyber_toolkit.prepare_environment(scan_info["tools"])
 
             await ui_manager.send_progress(
-                f"Starting scan on `{scan_info['target']}`\n"
-                f"Running {len(scan_info['tools'])} tools with {scan_info['workers']} workers"
+                f"Starting scan on `{scan_info['target']}` using {len(scan_info['tools'])} tools with {scan_info['workers']} workers"
             )
 
             # تنفيذ الأدوات المحددة
@@ -261,17 +266,25 @@ class TelegramBot:
                 scan_info["workers"]
             )
 
-            # عرض ملخص الفحص
+            # عرض النتائج مع حساب زمن التنفيذ (إذا كانت القيمة متوفرة)
+            formatted_results = ui_manager.display_results(results)
+            await context.bot.send_message(
+                chat_id=chat_id,
+                text=formatted_results,
+                parse_mode="Markdown"
+            )
+
+            # إرسال ملخص الفحص
             status_manager = ExecutionStatusManager()
             status_manager.load_status()
             summary = status_manager.get_summary()
             summary_message = (
-                "📊 *Scan Summary*:\n\n"
-                f"- Total Operations: {summary['total']}\n"
-                f"- Completed: {summary['completed']}\n"
-                f"- Failed: {summary['failed']}\n"
-                f"- In Progress: {summary['in_progress']}\n\n"
-                "👆 For more details, use /status command."
+                "📊 *Scan Summary:*\n\n"
+                f"• Total Operations: {summary['total']}\n"
+                f"• Completed: {summary['completed']}\n"
+                f"• Failed: {summary['failed']}\n"
+                f"• In Progress: {summary['in_progress']}\n\n"
+                "👆 For more details, use the /status command."
             )
             await context.bot.send_message(
                 chat_id=chat_id,
@@ -279,15 +292,14 @@ class TelegramBot:
                 parse_mode="Markdown"
             )
 
-            # رسالة انتهاء الفحص
+            # إعلام انتهاء الفحص
             await context.bot.send_message(
                 chat_id=chat_id,
-                text="✅ *Scan Completed*\nAll tools have finished execution.",
+                text="✅ *Scan Completed!* All tools have finished execution.",
                 parse_mode="Markdown"
             )
 
         except Exception as e:
-            # التقاط الأخطاء وإعلام المستخدم بها
             exc_type, exc_obj, exc_tb = sys.exc_info()
             line_number = exc_tb.tb_lineno if exc_tb else "N/A"
             await context.bot.send_message(
@@ -304,13 +316,11 @@ class TelegramBot:
             usage_message = (
                 "⚠️ *Scan Usage:*\n\n"
                 "`/scan <target> [workers] [mode]`\n\n"
-                "*Examples:*\n"
-                "• `/scan example.com` - Scan with defaults\n"
-                "• `/scan example.com 4 all` - All tools\n"
-                "• `/scan example.com 2 tool1,tool2` - Specific tools\n\n"
-                "*Defaults:*\n"
-                "• Workers: 4\n"
-                "• Mode: all"
+                "💡 *Examples:*\n"
+                "• `/scan example.com` – Scan with defaults\n"
+                "• `/scan example.com 4 all` – Run all tools\n"
+                "• `/scan example.com 2 tool1,tool2` – Run specific tools\n\n"
+                "• *Defaults:* Workers: 4 | Mode: all"
             )
             await update.message.reply_text(usage_message, parse_mode="Markdown")
             return
@@ -319,12 +329,10 @@ class TelegramBot:
         workers = int(context.args[1]) if len(context.args) > 1 and context.args[1].isdigit() else 4
         mode = context.args[2] if len(context.args) > 2 else "all"
 
-        # التحقق من صيغة الهدف
         if not target or " " in target:
             await update.message.reply_text("❌ *Error:* Invalid target format", parse_mode="Markdown")
             return
 
-        # تحديد الأدوات التي ستستخدم في الفحص
         tools_input = [] if mode.lower() == "all" else mode.split(",")
         tools_to_run = self.cyber_toolkit.validate_and_prepare_tools(tools_input)
 
@@ -339,7 +347,6 @@ class TelegramBot:
             "workers": workers,
         }
 
-        # إعداد لوحة التأكيد باستخدام أزرار Inline Keyboard
         keyboard = [
             [
                 InlineKeyboardButton("✅ Start Scan", callback_data="scan_confirm"),
@@ -350,15 +357,14 @@ class TelegramBot:
 
         confirm_message = (
             "🎯 *Scan Configuration*\n\n"
-            f"• Target: `{target}`\n"
-            f"• Workers: {workers}\n"
-            f"• Tools: {len(tools_to_run)}\n"
-            f"• Mode: {mode}\n\n"
-            "*Selected Tools:*\n"
+            f"• *Target:* `{target}`\n"
+            f"• *Workers:* {workers}\n"
+            f"• *Tools:* {len(tools_to_run)}\n"
+            f"• *Mode:* {mode}\n\n"
+            "🛠️ *Selected Tools:*\n"
             f"{', '.join(t['name'] for t in tools_to_run)}\n\n"
             "Please confirm to start the scan:"
         )
-
         await update.message.reply_text(
             confirm_message, reply_markup=reply_markup, parse_mode="Markdown"
         )
@@ -386,13 +392,12 @@ class TelegramBot:
             BotCommand("scan", "Start a new security assessment"),
             BotCommand("status", "View bot and scan status"),
         ]
-        # يتم تعيينها عند بدء التطبيق
+
         async def set_commands(app: Application) -> None:
             await app.bot.set_my_commands(commands)
 
-        app.post_init = set_commands  # post_init callback ليتم استدعاؤه بعد تهيئة التطبيق
-
-        # بدء polling
+        app.post_init = set_commands  # سيتم استدعاؤه بعد تهيئة التطبيق
         app.run_polling()
+
 
 # =============================================================================

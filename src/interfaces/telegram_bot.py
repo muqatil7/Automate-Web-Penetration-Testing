@@ -60,12 +60,12 @@ class TelegramUIManager(UIManager):
             error = result.get("error", "")
             time_taken = result.get("time_taken")
             message += f"{status_icon} *{tool_name}*\n"
-            message += f"   └ *Status:* {'Success' if status_icon == '✅' else 'Failed'}\n"
+            message += f"    └ *Status:* {'Success' if status_icon == '✅' else 'Failed'}\n"
             if time_taken is not None:
-                message += f"   └ *Time Taken:* {time_taken:.2f} seconds\n"
+                message += f"    └ *Time Taken:* {time_taken:.2f} seconds\n"
             if error:
-                message += f"   └ *Error:* `{error}`\n"
-            message += f"   └ *Log:* `{result.get('log_path', 'N/A')}`\n\n"
+                message += f"    └ *Error:* `{error}`\n"
+            message += f"    └ *Log:* `{result.get('log_path', 'N/A')}`\n\n"
         return message
 
     def show_scan_start(self, target: str, num_tools: int, workers: int) -> str:
@@ -171,7 +171,7 @@ class TelegramBot:
             "• Active Since: {active_since}\n"
             "• Mode: Security Assessment\n\n"
             "👇 Quick Actions: Select an option below for details."
-            
+
         ).format(
             total=summary["total"],
             in_progress=summary["in_progress"],
@@ -379,6 +379,91 @@ class TelegramBot:
             confirm_message, reply_markup=reply_markup, parse_mode="Markdown"
         )
 
+    async def execute_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        """Execute a command and send formatted results to the user."""
+        if not context.args:
+            await update.message.reply_text(
+                "⚠️ *Command Usage:*\n"
+                "`/cmd <command>`\n\n"
+                "💡 *Example:*\n"
+                "`/cmd nmap -v example.com`\n\n"
+                "⚠️ Note: Only predefined security commands are allowed.",
+                parse_mode="Markdown"
+            )
+            return
+
+        command = " ".join(context.args)
+        chat_id = update.effective_chat.id
+
+        # Send initial status message
+        status_message = await context.bot.send_message(
+            chat_id=chat_id,
+            text="🔄 *Executing command...*\n"
+                 f"`{command}`",
+            parse_mode="Markdown"
+        )
+
+        try:
+            # Validate command against available tools
+            tool_found = False
+            for tool in self.cyber_toolkit.tm.tools.values():
+                if command.startswith(tool['command']):
+                    tool_found = True
+                    break
+
+            if not tool_found:
+                await status_message.edit_text(
+                    "❌ *Error:* Command not allowed.\n"
+                    "Only predefined security tools can be executed.",
+                    parse_mode="Markdown"
+                )
+                return
+
+            # Execute the command
+            start_time = datetime.now()
+            process = await asyncio.create_subprocess_shell(
+                command,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE
+            )
+            stdout, stderr = await process.communicate()
+            execution_time = (datetime.now() - start_time).total_seconds()
+
+            # Format the output
+            output = stdout.decode() if stdout else ""
+            error = stderr.decode() if stderr else ""
+            
+            # Prepare result message
+            result_message = (
+                f"🎯 *Command Execution Results*\n\n"
+                f"📌 *Command:*\n`{command}`\n\n"
+                f"⏱️ *Execution Time:* {execution_time:.2f}s\n"
+                f"📟 *Exit Code:* {process.returncode}\n\n"
+            )
+
+            # Add output if exists
+            if output:
+                # Limit output length to avoid Telegram message limits
+                output = output[:3500] + "..." if len(output) > 3500 else output
+                result_message += f"📤 *Output:*\n```\n{output}```\n\n"
+
+            # Add error if exists
+            if error:
+                error = error[:500] + "..." if len(error) > 500 else error
+                result_message += f"⚠️ *Errors:*\n```\n{error}```\n"
+
+            # Update status message with results
+            await status_message.edit_text(
+                result_message,
+                parse_mode="Markdown"
+            )
+
+        except Exception as e:
+            await status_message.edit_text(
+                f"❌ *Error during execution:*\n`{str(e)}`",
+                parse_mode="Markdown"
+            )
+
     # -------------------------------------------------------------------------
     # إعداد وتشغيل التطبيق
     # -------------------------------------------------------------------------
@@ -393,6 +478,7 @@ class TelegramBot:
         app.add_handler(CommandHandler("scan", self.scan))
         app.add_handler(CommandHandler("status", self.status))
         app.add_handler(CallbackQueryHandler(self.button_callback))
+        app.add_handler(CommandHandler("cmd", self.execute_command))
 
         # إعداد أوامر البوت الافتراضية (تظهر للمستخدم في واجهة تيليجرام)
         commands = [

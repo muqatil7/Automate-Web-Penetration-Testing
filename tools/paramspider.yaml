@@ -4,5 +4,3 @@ install:
   - "git clone https://github.com/devanshbatham/ParamSpider.git"
   - "cd paramspider && pip install ."
 run_command: "paramspider -d {target}"
-
-

@@ -13,7 +13,7 @@ import re
 from datetime import datetime
 from io import StringIO
 from typing import Optional, List, Dict, Any
-from telegram import BotCommand
+from pathlib import Path
 
 class TelegramUIManager(UIManager):
     """Custom UI Manager for Telegram that formats output for Telegram"""
@@ -72,13 +72,8 @@ class TelegramBot:
         self.active_scans: Dict[int, Dict[str, Any]] = {}
         self.start_time = datetime.now()
 
-    async def start(self, update: Update) -> None:
-        """
-        Handle /start command
-
-        Parameters:
-        update (Update): Incoming update object containing message data
-        """
+    async def start(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        """Handle /start command"""
         welcome_message = """🛡️ *Cyber Security Tool Bot*
 
 Welcome to your security assessment assistant!
@@ -380,7 +375,7 @@ Please confirm to start the scan:"""
             parse_mode='Markdown'
         )
 
-    async def run(self) -> None:
+    def run(self) -> None:
         """Run the Telegram bot"""
         app = Application.builder().token(self.token).build()
 
@@ -392,23 +387,8 @@ Please confirm to start the scan:"""
         app.add_handler(CallbackQueryHandler(self.button_callback))
         app.add_handler(CommandHandler("status", self.status))
 
-
-    # Set bot commands menu
-        commands = [
-            BotCommand("start", "start menu"),
-            BotCommand("help", "how to use the bot"),
-            BotCommand("list", "list of tools"),
-            BotCommand("scan", "start a scan"),
-            BotCommand("status", "bot status"),
-        ]
-        await app.bot.set_my_commands(commands)
-
         # Start the bot
         app.run_polling()
-
-    #    bot.send_message(chat_id=8067500091, text="I'm a bot, please talk to me!")
-     #   self.start()
-
 
 if __name__ == "__main__":
     # Configure logging
@@ -420,4 +400,4 @@ if __name__ == "__main__":
     # Replace with your bot token
     BOT_TOKEN = "YOUR_BOT_TOKEN_HERE"
     bot = TelegramBot(BOT_TOKEN)
-    asyncio.run(bot.run())
+    bot.run()

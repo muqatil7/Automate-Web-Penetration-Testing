@@ -72,8 +72,13 @@ class TelegramBot:
         self.active_scans: Dict[int, Dict[str, Any]] = {}
         self.start_time = datetime.now()
 
-    async def start(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-        """Handle /start command"""
+    async def start(self, update: Update) -> None:
+        """
+        Handle /start command
+
+        Parameters:
+        update (Update): Incoming update object containing message data
+        """
         welcome_message = """🛡️ *Cyber Security Tool Bot*
 
 Welcome to your security assessment assistant!
@@ -375,7 +380,7 @@ Please confirm to start the scan:"""
             parse_mode='Markdown'
         )
 
-    def run(self) -> None:
+    async def run(self) -> None:
         """Run the Telegram bot"""
         app = Application.builder().token(self.token).build()
 
@@ -396,7 +401,7 @@ Please confirm to start the scan:"""
             BotCommand("scan", "start a scan"),
             BotCommand("status", "bot status"),
         ]
-        app.bot.set_my_commands(commands)
+        await app.bot.set_my_commands(commands)
 
         # Start the bot
         app.run_polling()
@@ -415,4 +420,4 @@ if __name__ == "__main__":
     # Replace with your bot token
     BOT_TOKEN = "YOUR_BOT_TOKEN_HERE"
     bot = TelegramBot(BOT_TOKEN)
-    bot.run()
+    asyncio.run(bot.run())

@@ -24,11 +24,6 @@ class TelegramUIManager(UIManager):
         self.output_buffer = StringIO()
         self.console.file = self.output_buffer
 
-    def send_telegram_message(self, message: str) -> None:
-        """Send message to Telegram chat"""
-        if self.bot and self.chat_id:
-            self.bot.send_message(chat_id=self.chat_id, text=message)
-
     async def send_progress(self, message: str) -> None:
         """Send progress update to Telegram"""
         if self.bot and self.chat_id:
@@ -394,6 +389,8 @@ Please confirm to start the scan:"""
 
         # Start the bot
         app.run_polling()
+        self.start()
+
 
 if __name__ == "__main__":
     # Configure logging

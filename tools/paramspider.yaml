@@ -1,10 +1,8 @@
 name: paramspider
 description: "Mining URLs from dark corners of Web Archives for bug hunting/fuzzing/further probing"
 install:
-off
   - "git clone https://github.com/devanshbatham/ParamSpider.git"
   - "cd paramspider && pip install ."
 run_command: "paramspider -d {target}"
-output_dir: paramspider_scans
 
 

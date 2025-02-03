@@ -15,7 +15,7 @@ def send_file_to_bot(filename_without_extension):
 
     # نقل ملف السجل إلى المجلد الناتج
     try:
-        shutil.move('cyber_toolkit.log', 'outputs')
+        shutil.move('logs', 'outputs')
     except Exception as e:
         print(f"❌ Error moving log file : {e}")
     

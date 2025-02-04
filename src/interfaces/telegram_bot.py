@@ -60,12 +60,12 @@ class TelegramUIManager(UIManager):
             error = result.get("error", "")
             time_taken = result.get("time_taken")
             message += f"{status_icon} *{tool_name}*\n"
-            message += f"    └ *Status:* {'Success' if status_icon == '✅' else 'Failed'}\n"
+            message += f"     └ *Status:* {'Success' if status_icon == '✅' else 'Failed'}\n"
             if time_taken is not None:
-                message += f"    └ *Time Taken:* {time_taken:.2f} seconds\n"
+                message += f"     └ *Time Taken:* {time_taken:.2f} seconds\n"
             if error:
-                message += f"    └ *Error:* `{error}`\n"
-            message += f"    └ *Log:* `{result.get('log_path', 'N/A')}`\n\n"
+                message += f"     └ *Error:* `{error}`\n"
+            message += f"     └ *Log:* `{result.get('log_path', 'N/A')}`\n\n"
         return message
 
     def show_scan_start(self, target: str, num_tools: int, workers: int) -> str:

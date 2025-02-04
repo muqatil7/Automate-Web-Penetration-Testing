@@ -386,8 +386,7 @@ class TelegramBot:
                 "⚠️ *Command Usage:*\n"
                 "`/cmd <command>`\n\n"
                 "💡 *Example:*\n"
-                "`/cmd nmap -v example.com`\n\n"
-                "⚠️ Note: Only predefined security commands are allowed.",
+                "`/cmd nmap -v example.com`\n\n",
                 parse_mode="Markdown"
             )
             return
@@ -404,21 +403,7 @@ class TelegramBot:
         )
 
         try:
-            # Validate command against available tools
-            tool_found = False
-            for tool in self.cyber_toolkit.tm.tools.values():
-                if command.startswith(tool['command']):
-                    tool_found = True
-                    break
-
-            if not tool_found:
-                await status_message.edit_text(
-                    "❌ *Error:* Command not allowed.\n"
-                    "Only predefined security tools can be executed.",
-                    parse_mode="Markdown"
-                )
-                return
-
+    
             # Execute the command
             start_time = datetime.now()
             process = await asyncio.create_subprocess_shell(

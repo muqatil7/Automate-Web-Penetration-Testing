@@ -60,12 +60,12 @@ class TelegramUIManager(UIManager):
             error = result.get("error", "")
             time_taken = result.get("time_taken")
             message += f"{status_icon} *{tool_name}*\n"
-            message += f"     └ *Status:* {'Success' if status_icon == '✅' else 'Failed'}\n"
+            message += f"    └ *Status:* {'Success' if status_icon == '✅' else 'Failed'}\n"
             if time_taken is not None:
-                message += f"     └ *Time Taken:* {time_taken:.2f} seconds\n"
+                message += f"    └ *Time Taken:* {time_taken:.2f} seconds\n"
             if error:
-                message += f"     └ *Error:* `{error}`\n"
-            message += f"     └ *Log:* `{result.get('log_path', 'N/A')}`\n\n"
+                message += f"    └ *Error:* `{error}`\n"
+            message += f"    └ *Log:* `{result.get('log_path', 'N/A')}`\n\n"
         return message
 
     def show_scan_start(self, target: str, num_tools: int, workers: int) -> str:
@@ -246,7 +246,7 @@ class TelegramBot:
                 await query.edit_message_text("❌ *Scan configuration not found!*")
                 return
 
-            await query.edit_message_text("**Scan started!** You will receive progress updates shortly.")
+            await query.edit_message_text("🚀 *Scan started!* You will receive progress updates shortly.")
             asyncio.create_task(self.execute_scan(query.message.chat_id, scan_info, context))
     # -------------------------------------------------------------------------
     # تنفيذ الأدوات وإرسال النتائج
@@ -386,7 +386,8 @@ class TelegramBot:
                 "⚠️ *Command Usage:*\n"
                 "`/cmd <command>`\n\n"
                 "💡 *Example:*\n"
-                "`/cmd nmap -v example.com`\n\n",
+                "`/cmd nmap -v example.com`\n\n"
+                "⚠️ Note: Only predefined security commands are allowed.",
                 parse_mode="Markdown"
             )
             return
@@ -403,7 +404,21 @@ class TelegramBot:
         )
 
         try:
-    
+            # Validate command against available tools
+            tool_found = False
+            for tool in self.cyber_toolkit.tm.tools.values():
+                if command.startswith(tool['command']):
+                    tool_found = True
+                    break
+
+            if not tool_found:
+                await status_message.edit_text(
+                    "❌ *Error:* Command not allowed.\n"
+                    "Only predefined security tools can be executed.",
+                    parse_mode="Markdown"
+                )
+                return
+
             # Execute the command
             start_time = datetime.now()
             process = await asyncio.create_subprocess_shell(

@@ -459,8 +459,10 @@ class TelegramBot:
             )
 
         except Exception as e:
+            import traceback
+            tb = traceback.format_exc()
             await status_message.edit_text(
-                f"❌ *Error during execution:*\n`{str(e)}`",
+                f"❌ *Error during execution:*\n`{str(e)}`\n\n*Traceback:*\n```\n{tb}\n```",
                 parse_mode="Markdown"
             )
 

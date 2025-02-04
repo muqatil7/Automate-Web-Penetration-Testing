@@ -29,15 +29,16 @@ class CyberToolkit:
                 if self._is_valid_tool(tool):
                     tools_to_run.append(tool)
                 else:
+                    print(f"Tool {tool_name} is missing required information or not found")
                     self.ui.show_error(f"Tool {tool_name} is missing required information or not found")
         else:
             tools_to_run = list(self.tm.tools.values())
         return tools_to_run
-    #
-    def _is_valid_tool(self, tool):
+    
+    def _is_valid_tool(self, tool_name):
         """Check if tool has required attributes"""
         try:
-            if tool in load_tools():
+            if any(tool['name'] == tool_name['name'] for tool in load_tools()):
                 return True
         except KeyError as e:
             print("KeyError", e)

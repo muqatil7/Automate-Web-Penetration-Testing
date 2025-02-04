@@ -246,7 +246,7 @@ class TelegramBot:
                 await query.edit_message_text("❌ *Scan configuration not found!*")
                 return
 
-            await query.edit_message_text("🚀 *Scan started!* You will receive progress updates shortly.")
+            await query.edit_message_text("**Scan started!** You will receive progress updates shortly.")
             asyncio.create_task(self.execute_scan(query.message.chat_id, scan_info, context))
     # -------------------------------------------------------------------------
     # تنفيذ الأدوات وإرسال النتائج

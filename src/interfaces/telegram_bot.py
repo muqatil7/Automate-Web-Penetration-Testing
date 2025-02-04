@@ -379,11 +379,6 @@ class TelegramBot:
             confirm_message, reply_markup=reply_markup, parse_mode="Markdown"
         )
 
-
-# =============================================================================
-# تنفيذ الأوامر الخاصة بالنظام /cmd 
-# =============================================================================
-
     async def execute_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         """Execute a command and send formatted results to the user."""
         if not context.args:
@@ -409,7 +404,21 @@ class TelegramBot:
         )
 
         try:
-        
+            # Validate command against available tools
+            tool_found = False
+            for tool in self.cyber_toolkit.tm.tools.values():
+                if command.startswith(tool['command']):
+                    tool_found = True
+                    break
+
+            if not tool_found:
+                await status_message.edit_text(
+                    "❌ *Error:* Command not allowed.\n"
+                    "Only predefined security tools can be executed.",
+                    parse_mode="Markdown"
+                )
+                return
+
             # Execute the command
             start_time = datetime.now()
             process = await asyncio.create_subprocess_shell(

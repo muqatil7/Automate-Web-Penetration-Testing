@@ -5,6 +5,7 @@ from src.interfaces.config_loader import load_config
 from src.core.tool_manager import ToolManager
 from src.core.executor import ToolExecutor
 from src.interfaces.ui_manager import UIManager
+from src.core.tool_loader import load_tools
 
 def setup_logging():
     logging.basicConfig(
@@ -35,7 +36,11 @@ class CyberToolkit:
     #
     def _is_valid_tool(self, tool):
         """Check if tool has required attributes"""
-        return tool and 'name' in tool and 'command' in tool
+        try:
+            if tool in load_tools():
+                return True
+        except KeyError:
+            return False
     
     def prepare_environment(self, tools_to_run):
         """Prepare environment for tools execution"""

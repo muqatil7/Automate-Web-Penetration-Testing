@@ -39,7 +39,8 @@ class CyberToolkit:
         try:
             if tool in load_tools():
                 return True
-        except KeyError:
+        except KeyError as e:
+            print("KeyError", e)
             return False
     
     def prepare_environment(self, tools_to_run):

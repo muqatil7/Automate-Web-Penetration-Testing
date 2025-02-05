@@ -19,6 +19,7 @@ class ExecutionStatusManager:
     def __init__(self, status_file: str = "execution_status.json"):
         self.status_file = Path(status_file)
         self.operations: Dict[str, OperationStatus] = {}
+        self.operations_now: str = ""
 
     def update_operation(self, tool_name: str, status: str, command: str, result: Optional[Dict] = None) -> None:
         """Update the status of an operation"""

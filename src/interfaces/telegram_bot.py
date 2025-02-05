@@ -246,7 +246,7 @@ class TelegramBot:
                 await query.edit_message_text("❌ *Scan configuration not found!*")
                 return
 
-            await query.edit_message_text("🚀 *Scan started!* You will receive progress updates shortly.")
+            await query.edit_message_text("🚀 Scan started! You will receive progress updates shortly.")
             asyncio.create_task(self.execute_scan(query.message.chat_id, scan_info, context))
     # -------------------------------------------------------------------------
     # تنفيذ الأدوات وإرسال النتائج
@@ -254,37 +254,60 @@ class TelegramBot:
     async def execute_scan(self, chat_id: int, scan_info: Dict[str, Any], context: ContextTypes.DEFAULT_TYPE) -> None:
         ui_manager = TelegramUIManager(context.bot, chat_id)
         self.cyber_toolkit.ui = ui_manager
-
+        execution_status = ExecutionStatusManager()
+    
+        # إرسال رسالة أولية لتوضيح بدء عملية الفحص
         await context.bot.send_message(
             chat_id=chat_id,
             text="🚀 *Initializing Scan*\n\nPreparing tools...",
             parse_mode="Markdown"
         )
-
+    
+        # إرسال رسالة توضح بدء الفحص وتحتوي على قيمة operations_now
+        progress_message = await context.bot.send_message(
+            chat_id=chat_id,
+            text=f"🚀 *Scan Started!*\n\nOperations: {execution_status.operations_now}",
+            parse_mode="Markdown"
+        )
+    
+        # دالة داخلية تقوم بتحديث رسالة الـ progress عند تغير operations_now
+        async def update_progress():
+            last_value = execution_status.operations_now
+            while True:
+                if execution_status.operations_now != last_value:
+                    try:
+                        await context.bot.edit_message_text(
+                            chat_id=chat_id,
+                            message_id=progress_message.message_id,
+                            text=f"🚀 *Scan Started!*\n\nOperations: {execution_status.operations_now}",
+                            parse_mode="Markdown"
+                        )
+                    except Exception as e:
+                        logging.error("Error updating progress message: %s", e)
+                    last_value = execution_status.operations_now
+                await asyncio.sleep(2)  # التحقق كل ثانيتين (يمكن تعديل الفترة حسب الحاجة)
+    
+        # إنشاء مهمة لتحديث الرسالة بشكل دوري
+        progress_task = asyncio.create_task(update_progress())
+    
         try:
             await ui_manager.send_progress("Setting up environment...")
             self.cyber_toolkit.prepare_environment(scan_info["tools"])
-
+    
             await ui_manager.send_progress(
                 f"Starting scan on `{scan_info['target']}` using {len(scan_info['tools'])} tools with {scan_info['workers']} workers"
             )
-
-            # تشغيل تنفيذ الأدوات في خيط منفصل لتجنب حجب الـ event loop
+    
+            # تنفيذ أدوات الفحص في خيط منفصل لتجنب حجب event loop
             results = await asyncio.to_thread(
                 self.cyber_toolkit.execute_tools,
                 scan_info["tools"],
                 scan_info["target"],
                 scan_info["workers"]
             )
-
-            # يمكنك إرسال النتائج أو الملخص كما هو معمول به
-         #   formatted_results = ui_manager.display_results(results)
-         #   await context.bot.send_message(
-           #     chat_id=chat_id,
-         #       text=formatted_results,
-          #      parse_mode="Markdown"
-          #  )
-
+    
+            # (يمكنك هنا إرسال النتائج أو الملخص للمستخدم)
+    
             status_manager = ExecutionStatusManager()
             status_manager.load_status()
             summary = status_manager.get_summary()
@@ -301,13 +324,13 @@ class TelegramBot:
                 text=summary_message,
                 parse_mode="Markdown"
             )
-
+    
             await context.bot.send_message(
                 chat_id=chat_id,
                 text="✅ *Scan Completed!* All tools have finished execution.",
                 parse_mode="Markdown"
             )
-
+    
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             line_number = exc_tb.tb_lineno if exc_tb else "N/A"
@@ -317,7 +340,13 @@ class TelegramBot:
                 parse_mode="Markdown"
             )
         finally:
+            # إلغاء مهمة التحديث عند انتهاء عملية الفحص
+            progress_task.cancel()
             self.active_scans.pop(chat_id, None)
+
+# -------------------------------------------------------------------------
+# تنفيذ الأوامر
+# -------------------------------------------------------------------------
 
 
     async def scan(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:

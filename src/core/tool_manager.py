@@ -5,6 +5,7 @@ from pathlib import Path
 import subprocess
 from typing import Dict, List
 from src.interfaces.telegram_bot import TelegramUIManager
+from .execution_status import ExecutionStatusManager
 class ToolManager:
     def __init__(self, tools_dir: str = "tools", install_dir: str = "tools_installations"):
         self.tools_dir = Path(tools_dir)
@@ -60,14 +61,19 @@ class ToolManager:
             )
 
     def prepare_tool(self, tool_name: str):
+
+        status = ExecutionStatusManager()
+
         tool = self.get_tool(tool_name)
         if not tool:
             raise ValueError(f"Tool {tool_name} not found")
         
         if not self.is_installed(tool):
-            TelegramUIManager.send_progress(f"Installing {tool_name}...")
+            status.operations_now = f"Installing {tool_name}..."
             self.install_tool(tool)
+            status.operations_now = f"{tool_name} installed successfully."
         else:
-            TelegramUIManager.send_progress(f"Updating {tool_name}...")
+            self.update_tool(tool)
+            status.operations_now = f"{tool_name} is up to date."
             self.update_tool(tool)
         return tool

@@ -285,7 +285,7 @@ class TelegramBot:
                     except Exception as e:
                         logging.error("Error updating progress message: %s", e)
                     last_value = execution_status.operations_now
-                await asyncio.sleep(2)  # التحقق كل ثانيتين (يمكن تعديل الفترة حسب الحاجة)
+                await asyncio.sleep(1)  # التحقق كل ثانيتين (يمكن تعديل الفترة حسب الحاجة)
     
         # إنشاء مهمة لتحديث الرسالة بشكل دوري
         progress_task = asyncio.create_task(update_progress())

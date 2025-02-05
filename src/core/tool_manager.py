@@ -27,9 +27,10 @@ class ToolManager:
         return self.tools[name]
 
     def is_installed(self, tool: dict) -> bool:
-        # التحقق من وجود الأداة في مجلد التثبيت العام
-        tool_path = self.install_dir / tool['name']
-        return tool_path.exists() and any(tool_path.iterdir())
+        folder_path = self.install_dir / tool['name']
+        if os.path.exists(folder_path) and os.path.isdir(folder_path):
+            return True
+        return False
 
     def install_tool(self, tool: dict):
         status = ExecutionStatusManager()

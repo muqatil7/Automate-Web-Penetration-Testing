@@ -4,7 +4,7 @@ import yaml
 from pathlib import Path
 import subprocess
 from typing import Dict, List
-
+from src.interfaces.telegram_bot import TelegramUIManager
 class ToolManager:
     def __init__(self, tools_dir: str = "tools", install_dir: str = "tools_installations"):
         self.tools_dir = Path(tools_dir)
@@ -65,7 +65,9 @@ class ToolManager:
             raise ValueError(f"Tool {tool_name} not found")
         
         if not self.is_installed(tool):
+            TelegramUIManager.send_progress(f"Installing {tool_name}...")
             self.install_tool(tool)
         else:
+            TelegramUIManager.send_progress(f"Updating {tool_name}...")
             self.update_tool(tool)
         return tool

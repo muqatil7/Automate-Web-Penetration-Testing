@@ -4,7 +4,6 @@ import yaml
 from pathlib import Path
 import subprocess
 from typing import Dict, List
-from src.interfaces.telegram_bot import TelegramUIManager
 from .execution_status import ExecutionStatusManager
 class ToolManager:
     def __init__(self, tools_dir: str = "tools", install_dir: str = "tools_installations"):

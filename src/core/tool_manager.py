@@ -28,8 +28,12 @@ class ToolManager:
 
     def is_installed(self, tool: dict) -> bool:
         folder_path = self.install_dir / tool['name']
+
         if os.path.exists(folder_path) and os.path.isdir(folder_path):
+            print(f"[✳] {tool['name']} is already installed.")
             return True
+        
+        print(f"[✳] {tool['name']} is not installed.")
         return False
 
     def install_tool(self, tool: dict):
@@ -70,7 +74,7 @@ class ToolManager:
         if not tool:
             raise ValueError(f"Tool {tool_name} not found")
         
-        if not self.is_installed(tool):
+        if not self.is_installed(tool_name):
             print(f"[✳] Installing {tool_name}...")
             status.operations_now = f"Installing {tool_name}..."
             self.install_tool(tool)

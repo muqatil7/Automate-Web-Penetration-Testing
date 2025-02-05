@@ -1,4 +1,4 @@
-name: Nuclei
+name: nuclei
 description: "Nuclei is a fast tool for configurable targeted scanning based on templates offering massive extensibility and ease of use."
 install:
   - "cd ../tools && chmod +x install_go.sh && ./install_go.sh"

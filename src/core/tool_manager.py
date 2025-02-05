@@ -32,6 +32,8 @@ class ToolManager:
         return tool_path.exists() and any(tool_path.iterdir())
 
     def install_tool(self, tool: dict):
+        status = ExecutionStatusManager()
+        status.operations_now = f"Start Installing {tool['name']}..."
         # إنشاء مجلد التثبيت إذا لم يكن موجوداً
         self.install_dir.mkdir(parents=True, exist_ok=True)
         
@@ -68,10 +70,12 @@ class ToolManager:
             raise ValueError(f"Tool {tool_name} not found")
         
         if not self.is_installed(tool):
+            print(f"[✳] Installing {tool_name}...")
             status.operations_now = f"Installing {tool_name}..."
             self.install_tool(tool)
             status.operations_now = f"{tool_name} installed successfully."
         else:
+            print(f"[✳] Updating {tool_name}...")
             self.update_tool(tool)
             status.operations_now = f"{tool_name} is up to date."
             self.update_tool(tool)

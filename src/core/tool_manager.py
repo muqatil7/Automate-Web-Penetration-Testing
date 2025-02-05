@@ -34,6 +34,7 @@ class ToolManager:
             return True
         
         print(f"[✳] {tool} is not installed.")
+        print(f"[✳] {folder_path}")
         return False
 
     def install_tool(self, tool: dict):
